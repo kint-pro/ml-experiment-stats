@@ -65,10 +65,14 @@ def test_generate_diff_from_dirs(tmp_path):
 def test_render_diff_markdown():
     diffs = [
         {
-            "method": "a", "metric": "acc",
-            "baseline_mean": 0.90, "baseline_std": 0.01,
-            "current_mean": 0.95, "current_std": 0.01,
-            "delta": 0.05, "delta_pct": 5.56,
+            "method": "a",
+            "metric": "acc",
+            "baseline_mean": 0.90,
+            "baseline_std": 0.01,
+            "current_mean": 0.95,
+            "current_std": 0.01,
+            "delta": 0.05,
+            "delta_pct": 5.56,
         },
     ]
     md = render_diff_markdown(diffs)
@@ -85,10 +89,14 @@ def test_render_diff_markdown_empty():
 def test_render_diff_json_returns_list():
     diffs = [
         {
-            "method": "a", "metric": "acc",
-            "baseline_mean": 0.90, "baseline_std": 0.01,
-            "current_mean": 0.95, "current_std": 0.01,
-            "delta": 0.05, "delta_pct": 5.56,
+            "method": "a",
+            "metric": "acc",
+            "baseline_mean": 0.90,
+            "baseline_std": 0.01,
+            "current_mean": 0.95,
+            "current_std": 0.01,
+            "delta": 0.05,
+            "delta_pct": 5.56,
         },
     ]
     result = render_diff_json(diffs)
@@ -102,10 +110,14 @@ def test_render_diff_json_empty():
 def test_render_diff_json_preserves_all_fields():
     diffs = [
         {
-            "method": "b", "metric": "loss",
-            "baseline_mean": 0.5, "baseline_std": 0.02,
-            "current_mean": 0.4, "current_std": 0.01,
-            "delta": -0.1, "delta_pct": -20.0,
+            "method": "b",
+            "metric": "loss",
+            "baseline_mean": 0.5,
+            "baseline_std": 0.02,
+            "current_mean": 0.4,
+            "current_std": 0.01,
+            "delta": -0.1,
+            "delta_pct": -20.0,
         },
     ]
     result = render_diff_json(diffs)
@@ -117,10 +129,14 @@ def test_render_diff_json_preserves_all_fields():
 def test_render_diff_console_prints_output(capsys):
     diffs = [
         {
-            "method": "a", "metric": "acc",
-            "baseline_mean": 0.90, "baseline_std": 0.01,
-            "current_mean": 0.95, "current_std": 0.01,
-            "delta": 0.05, "delta_pct": 5.56,
+            "method": "a",
+            "metric": "acc",
+            "baseline_mean": 0.90,
+            "baseline_std": 0.01,
+            "current_mean": 0.95,
+            "current_std": 0.01,
+            "delta": 0.05,
+            "delta_pct": 5.56,
         },
     ]
     render_diff_console(diffs)

@@ -94,7 +94,8 @@ def _console_power(metric_data: dict):
         return
 
     underpowered = [
-        (pair, pw) for pair, pw in power.items()
+        (pair, pw)
+        for pair, pw in power.items()
         if pw.get("power") is not None and pw["power"] < 0.8
     ]
     if not underpowered:
@@ -136,8 +137,7 @@ def _console_cross_dataset(statistics: dict):
     for metric, cd_data in cross.items():
         print(f"\n  {metric}:")
         ranks = ", ".join(
-            f"{m}={r:.1f}"
-            for m, r in sorted(cd_data["mean_ranks"].items(), key=lambda x: x[1])
+            f"{m}={r:.1f}" for m, r in sorted(cd_data["mean_ranks"].items(), key=lambda x: x[1])
         )
         print(f"    Ranks across {cd_data['n_datasets']} datasets: {ranks}")
         if "statistic" in cd_data:
@@ -233,8 +233,7 @@ def _md_friedman(lines: list[str], metric_data: dict):
     sig = "significant" if friedman["significant"] else "not significant"
     lines.append(f"Friedman test: p={friedman['p_value']:.4f} ({sig})")
     ranks = ", ".join(
-        f"{m}={r:.1f}"
-        for m, r in sorted(friedman["mean_ranks"].items(), key=lambda x: x[1])
+        f"{m}={r:.1f}" for m, r in sorted(friedman["mean_ranks"].items(), key=lambda x: x[1])
     )
     lines.append(f"Mean ranks: {ranks}")
     lines.append("")
@@ -285,7 +284,8 @@ def _md_power(lines: list[str], metric_data: dict):
         return
 
     underpowered = [
-        (pair, pw) for pair, pw in power.items()
+        (pair, pw)
+        for pair, pw in power.items()
         if pw.get("power") is not None and pw["power"] < 0.8
     ]
     if not underpowered:
@@ -332,8 +332,7 @@ def _md_cross_dataset(lines: list[str], statistics: dict):
         lines.append(f"### {metric}")
         lines.append("")
         ranks = ", ".join(
-            f"{m}={r:.1f}"
-            for m, r in sorted(cd_data["mean_ranks"].items(), key=lambda x: x[1])
+            f"{m}={r:.1f}" for m, r in sorted(cd_data["mean_ranks"].items(), key=lambda x: x[1])
         )
         lines.append(f"Ranks across {cd_data['n_datasets']} datasets: {ranks}")
         lines.append("")

@@ -96,7 +96,11 @@ class ResultsCollector:
         rope = cfg.rope if cfg else 0.01
 
         output = run_statistical_analysis(
-            self.runs, test=test, alpha=alpha, correction=correction, rope=rope,
+            self.runs,
+            test=test,
+            alpha=alpha,
+            correction=correction,
+            rope=rope,
         )
         save_statistics(output, str(self.results_dir), filename)
 

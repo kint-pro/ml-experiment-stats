@@ -27,14 +27,12 @@ def check_thresholds(results_dir: str, ci_config: CIConfig) -> bool:
     for metric, metric_data in statistics.get("metrics", {}).items():
         pairwise = metric_data.get("pairwise", [])
         baseline_comparisons = [
-            c for c in pairwise
-            if c["method_a"] == baseline or c["method_b"] == baseline
+            c for c in pairwise if c["method_a"] == baseline or c["method_b"] == baseline
         ]
 
         if not baseline_comparisons:
             print(
-                f"CI CHECK FAIL [{metric}]: "
-                f"no comparisons found for baseline '{baseline}'",
+                f"CI CHECK FAIL [{metric}]: no comparisons found for baseline '{baseline}'",
             )
             passed = False
             continue

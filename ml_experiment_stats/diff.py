@@ -21,16 +21,18 @@ def diff_summaries(current: dict, baseline: dict) -> list[dict]:
             base = base_metrics[metric]
             delta = curr["mean"] - base["mean"]
             pct = (delta / abs(base["mean"]) * 100) if base["mean"] != 0 else 0.0
-            diffs.append({
-                "method": method,
-                "metric": metric,
-                "baseline_mean": base["mean"],
-                "baseline_std": base["std"],
-                "current_mean": curr["mean"],
-                "current_std": curr["std"],
-                "delta": delta,
-                "delta_pct": pct,
-            })
+            diffs.append(
+                {
+                    "method": method,
+                    "metric": metric,
+                    "baseline_mean": base["mean"],
+                    "baseline_std": base["std"],
+                    "current_mean": curr["mean"],
+                    "current_std": curr["std"],
+                    "delta": delta,
+                    "delta_pct": pct,
+                }
+            )
 
     return diffs
 

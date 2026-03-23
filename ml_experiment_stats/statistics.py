@@ -81,7 +81,6 @@ def cliffs_delta(a: np.ndarray, b: np.ndarray) -> float:
     return float(dominance / (n_a * n_b))
 
 
-
 def effect_magnitude_cohens_d(d: float) -> str:
     d_abs = abs(d)
     if d_abs < 0.2:
@@ -105,7 +104,9 @@ def effect_magnitude_cliffs_delta(d: float) -> str:
 
 
 def compute_effect_size(
-    a: np.ndarray, b: np.ndarray, test_name: str,
+    a: np.ndarray,
+    b: np.ndarray,
+    test_name: str,
 ) -> tuple[float, str]:
     if test_name == "ttest":
         d = cohens_d(a, b)
@@ -125,20 +126,28 @@ def is_normal(a: np.ndarray, b: np.ndarray, alpha: float = 0.05) -> bool:
 
 
 def bootstrap_ci(
-    a: np.ndarray, b: np.ndarray, confidence: float = 0.95, n_resamples: int = 9999,
+    a: np.ndarray,
+    b: np.ndarray,
+    confidence: float = 0.95,
+    n_resamples: int = 9999,
 ) -> tuple[float, float] | None:
     diff = a - b
     if len(diff) < 5:
         return None
     result = stats.bootstrap(
-        (diff,), np.mean, confidence_level=confidence,
-        n_resamples=n_resamples, method="BCa",
+        (diff,),
+        np.mean,
+        confidence_level=confidence,
+        n_resamples=n_resamples,
+        method="BCa",
     )
     return (float(result.confidence_interval.low), float(result.confidence_interval.high))
 
 
 def post_hoc_power(
-    a: np.ndarray, b: np.ndarray, alpha: float = 0.05,
+    a: np.ndarray,
+    b: np.ndarray,
+    alpha: float = 0.05,
 ) -> dict:
     diff = a - b
     n = len(diff)
@@ -183,7 +192,9 @@ def holm_bonferroni(p_values: list[float], alpha: float) -> list[float]:
 
 
 def apply_correction(
-    p_values: list[float], correction: str, alpha: float,
+    p_values: list[float],
+    correction: str,
+    alpha: float,
 ) -> list[float]:
     if correction == "holm":
         return holm_bonferroni(p_values, alpha)
@@ -203,7 +214,9 @@ def resolve_test(test: str, a: np.ndarray, b: np.ndarray) -> str:
 
 
 def friedman_test(
-    values_by_method: dict[str, np.ndarray], metric: str, alpha: float = 0.05,
+    values_by_method: dict[str, np.ndarray],
+    metric: str,
+    alpha: float = 0.05,
 ) -> FriedmanResult | None:
     methods = sorted(values_by_method.keys())
     if len(methods) < 3:
@@ -303,17 +316,19 @@ def bayesian_signed_rank(
         else:
             decision = "equivalent"
 
-        results.append(BayesianResult(
-            method_a=method_a,
-            method_b=method_b,
-            metric=metric,
-            p_a_better=float(p_a),
-            p_rope=float(p_rope_val),
-            p_b_better=float(p_b),
-            rope_width=rope,
-            decision=decision,
-            n_samples=n,
-        ))
+        results.append(
+            BayesianResult(
+                method_a=method_a,
+                method_b=method_b,
+                metric=metric,
+                p_a_better=float(p_a),
+                p_rope=float(p_rope_val),
+                p_b_better=float(p_b),
+                rope_width=rope,
+                decision=decision,
+                n_samples=n,
+            )
+        )
 
     return results
 
@@ -356,9 +371,15 @@ def pairwise_test(
         es, mag = compute_effect_size(a, b, resolved_test)
         ci = bootstrap_ci(a, b)
         entry = (
-            method_a, method_b,
-            float(stat_result.statistic), float(stat_result.pvalue),
-            es, mag, n, resolved_test, ci,
+            method_a,
+            method_b,
+            float(stat_result.statistic),
+            float(stat_result.pvalue),
+            es,
+            mag,
+            n,
+            resolved_test,
+            ci,
         )
         raw_results.append(entry)
 
@@ -368,20 +389,22 @@ def pairwise_test(
     results = []
     for i, (m_a, m_b, stat, p, es, mag, n, tname, ci) in enumerate(raw_results):
         corrected_p = corrected_p_values[i]
-        results.append(PairwiseResult(
-            method_a=m_a,
-            method_b=m_b,
-            metric=metric,
-            statistic=stat,
-            p_value=p,
-            corrected_p_value=corrected_p,
-            significant=corrected_p < alpha,
-            effect_size=es,
-            effect_magnitude=mag,
-            test_name=tname,
-            n_samples=n,
-            confidence_interval=ci,
-        ))
+        results.append(
+            PairwiseResult(
+                method_a=m_a,
+                method_b=m_b,
+                metric=metric,
+                statistic=stat,
+                p_value=p,
+                corrected_p_value=corrected_p,
+                significant=corrected_p < alpha,
+                effect_size=es,
+                effect_magnitude=mag,
+                test_name=tname,
+                n_samples=n,
+                confidence_interval=ci,
+            )
+        )
 
     return results
 
@@ -452,7 +475,11 @@ def run_statistical_analysis(
                 }
 
         results = pairwise_test(
-            values_by_method, metric, test=test, alpha=alpha, correction=correction,
+            values_by_method,
+            metric,
+            test=test,
+            alpha=alpha,
+            correction=correction,
         )
 
         for r in results:
@@ -587,7 +614,6 @@ def significance_marker(p: float) -> str:
     if p < 0.05:
         return "*"
     return ""
-
 
 
 def save_statistics(output: dict, results_dir: str, filename: str = "statistics.json"):
