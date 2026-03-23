@@ -9,6 +9,7 @@ from ml_experiment_stats.statistics import significance_marker
 def _import_matplotlib():
     try:
         import matplotlib.pyplot as plt
+
         return plt
     except ImportError:
         raise ImportError("matplotlib required: pip install kint-stats[plots]") from None
@@ -17,9 +18,11 @@ def _import_matplotlib():
 def _import_pyarrow():
     try:
         import pyarrow.parquet as pq
+
         return pq
     except ImportError:
         raise ImportError("pyarrow required: pip install kint-stats[parquet]") from None
+
 
 COLORS = {
     0: "#2d3436",
@@ -51,7 +54,6 @@ def load_metrics(results_dir: str) -> list[dict]:
     return table.to_pylist()
 
 
-
 def _get_pairwise(statistics: dict | None, metric: str) -> list[dict]:
     if not statistics or metric not in statistics.get("metrics", {}):
         return []
@@ -62,7 +64,8 @@ def _get_pairwise(statistics: dict | None, metric: str) -> list[dict]:
 
 
 def _build_significance_lookup(
-    statistics: dict | None, metric: str,
+    statistics: dict | None,
+    metric: str,
 ) -> dict[tuple[str, str], float]:
     comparisons = _get_pairwise(statistics, metric)
     lookup = {}
@@ -115,12 +118,18 @@ def plot_comparison_bar(
             y_bar = y_max + y_step * (k + 1)
             y_lo = y_bar - y_step * 0.3
             ax.plot(
-                [x[i], x[i], x[j], x[j]], [y_lo, y_bar, y_bar, y_lo],
-                color="black", linewidth=0.8,
+                [x[i], x[i], x[j], x[j]],
+                [y_lo, y_bar, y_bar, y_lo],
+                color="black",
+                linewidth=0.8,
             )
             ax.text(
-                (x[i] + x[j]) / 2, y_bar, significance_marker(p),
-                ha="center", va="bottom", fontsize=9,
+                (x[i] + x[j]) / 2,
+                y_bar,
+                significance_marker(p),
+                ha="center",
+                va="bottom",
+                fontsize=9,
             )
 
     fig.tight_layout()
@@ -138,8 +147,7 @@ def plot_per_seed(rows: list[dict], metric: str, output_dir: str, formats: list[
     fig, ax = plt.subplots(figsize=(8, 4))
     for i, method in enumerate(methods):
         values = [
-            float(r[metric]) for r in rows
-            if r["method"] == method and r.get(metric) is not None
+            float(r[metric]) for r in rows if r["method"] == method and r.get(metric) is not None
         ]
         color = COLORS.get(i, COLORS[0])
         ax.plot(seeds[: len(values)], values, "o-", label=method, color=color, markersize=4)
@@ -242,21 +250,33 @@ def plot_critical_difference(
         ax.text(r, -0.15, str(r), ha="center", va="top", fontsize=9)
 
     top_half = sorted_methods[: n // 2]
-    bottom_half = sorted_methods[n // 2:]
+    bottom_half = sorted_methods[n // 2 :]
 
     for i, method in enumerate(top_half):
         rank = mean_ranks[method]
         y = 0.4 + i * 0.3
-        ax.plot(rank, 0, "o", color=COLORS.get(sorted_methods.index(method), COLORS[0]),
-                markersize=6, zorder=5)
+        ax.plot(
+            rank,
+            0,
+            "o",
+            color=COLORS.get(sorted_methods.index(method), COLORS[0]),
+            markersize=6,
+            zorder=5,
+        )
         ax.plot([rank, rank], [0, y], color="gray", linewidth=0.5, linestyle="--")
         ax.text(rank, y + 0.05, method, ha="center", va="bottom", fontsize=9, fontweight="bold")
 
     for i, method in enumerate(bottom_half):
         rank = mean_ranks[method]
         y = -0.4 - i * 0.3
-        ax.plot(rank, 0, "o", color=COLORS.get(sorted_methods.index(method), COLORS[0]),
-                markersize=6, zorder=5)
+        ax.plot(
+            rank,
+            0,
+            "o",
+            color=COLORS.get(sorted_methods.index(method), COLORS[0]),
+            markersize=6,
+            zorder=5,
+        )
         ax.plot([rank, rank], [0, y], color="gray", linewidth=0.5, linestyle="--")
         ax.text(rank, y - 0.05, method, ha="center", va="top", fontsize=9, fontweight="bold")
 
@@ -267,15 +287,25 @@ def plot_critical_difference(
         ranks = [mean_ranks[m] for m in group]
         y = group_y_start + i * 0.15
         ax.plot(
-            [min(ranks), max(ranks)], [y, y],
-            color="black", linewidth=2.5, solid_capstyle="round",
+            [min(ranks), max(ranks)],
+            [y, y],
+            color="black",
+            linewidth=2.5,
+            solid_capstyle="round",
         )
 
     cd_y = group_y_start + len(groups) * 0.15 + 0.3
     cd_x = rank_min
     ax.plot([cd_x, cd_x + cd], [cd_y, cd_y], color="red", linewidth=2)
-    ax.text(cd_x + cd / 2, cd_y + 0.05, f"CD={cd:.2f}", ha="center", va="bottom", fontsize=8,
-            color="red")
+    ax.text(
+        cd_x + cd / 2,
+        cd_y + 0.05,
+        f"CD={cd:.2f}",
+        ha="center",
+        va="bottom",
+        fontsize=8,
+        color="red",
+    )
 
     ax.set_title(f"Critical Difference Diagram: {metric}")
     ax.set_yticks([])
@@ -313,15 +343,24 @@ def generate_figures(config):
 
     for metric in sorted(metrics):
         plot_comparison_bar(
-            summary, metric, config.output.figures_dir, config.output.figure_format,
+            summary,
+            metric,
+            config.output.figures_dir,
+            config.output.figure_format,
             statistics=statistics,
         )
         if rows:
             plot_per_seed(rows, metric, config.output.figures_dir, config.output.figure_format)
         if statistics:
             plot_significance_heatmap(
-                statistics, metric, config.output.figures_dir, config.output.figure_format,
+                statistics,
+                metric,
+                config.output.figures_dir,
+                config.output.figure_format,
             )
             plot_critical_difference(
-                statistics, metric, config.output.figures_dir, config.output.figure_format,
+                statistics,
+                metric,
+                config.output.figures_dir,
+                config.output.figure_format,
             )

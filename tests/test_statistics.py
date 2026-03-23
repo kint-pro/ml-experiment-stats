@@ -397,11 +397,13 @@ def test_run_statistical_analysis_two_methods():
 
 def test_run_statistical_analysis_three_methods_with_friedman():
     np.random.seed(42)
-    runs = _make_runs({
-        "a": list(np.random.normal(0.9, 0.01, 20)),
-        "b": list(np.random.normal(0.7, 0.01, 20)),
-        "c": list(np.random.normal(0.5, 0.01, 20)),
-    })
+    runs = _make_runs(
+        {
+            "a": list(np.random.normal(0.9, 0.01, 20)),
+            "b": list(np.random.normal(0.7, 0.01, 20)),
+            "c": list(np.random.normal(0.5, 0.01, 20)),
+        }
+    )
     output = run_statistical_analysis(runs)
     metric_data = output["metrics"]["acc"]
     assert metric_data["friedman"] is not None

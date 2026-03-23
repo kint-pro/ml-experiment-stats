@@ -16,15 +16,27 @@ def _setup_results(tmp_path):
     collector = ResultsCollector(str(tmp_path))
     np.random.seed(42)
     for i in range(10):
-        collector.add(RunResult(
-            seed=42 + i, method="a", metrics={"acc": float(np.random.normal(0.9, 0.01))},
-        ))
-        collector.add(RunResult(
-            seed=42 + i, method="b", metrics={"acc": float(np.random.normal(0.7, 0.01))},
-        ))
-        collector.add(RunResult(
-            seed=42 + i, method="c", metrics={"acc": float(np.random.normal(0.5, 0.01))},
-        ))
+        collector.add(
+            RunResult(
+                seed=42 + i,
+                method="a",
+                metrics={"acc": float(np.random.normal(0.9, 0.01))},
+            )
+        )
+        collector.add(
+            RunResult(
+                seed=42 + i,
+                method="b",
+                metrics={"acc": float(np.random.normal(0.7, 0.01))},
+            )
+        )
+        collector.add(
+            RunResult(
+                seed=42 + i,
+                method="c",
+                metrics={"acc": float(np.random.normal(0.5, 0.01))},
+            )
+        )
     collector.save()
     return tmp_path
 
