@@ -1,9 +1,15 @@
-name: Release to PyPI
+name: Release
 
 on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      publish_pypi:
+        description: "Publish to PyPI (production)"
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -40,6 +46,7 @@ jobs:
           repository-url: https://test.pypi.org/legacy/
 
   publish-pypi:
+    if: github.event_name == 'workflow_dispatch' && inputs.publish_pypi
     needs: publish-testpypi
     runs-on: ubuntu-latest
     environment:
@@ -55,8 +62,9 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@release/v1
 
   github-release:
-    needs: publish-pypi
+    needs: publish-testpypi
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: write
     steps:
